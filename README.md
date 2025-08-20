@@ -81,13 +81,13 @@ GET /manga/solo-leveling/chapters
 ### Get Chapter Images
 
 ```http
-GET /manga/{slug}/chapter/{chapter}
+GET /manga/{slug}/chapters/{chapter}
 ```
 
 **Example:**
 
 ```http
-GET /manga/solo-leveling/chapter/200
+GET /manga/solo-leveling/chapters/200
 ```
 
 **Response:**

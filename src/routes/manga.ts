@@ -11,7 +11,7 @@ manga.get("/:slug", async (c) => {
   return c.json({ success: true, data: details } as ApiResponse<MangaDetails>);
 });
 
-// List all manga chapters
+// Get all chapters
 manga.get("/:slug/chapters", async (c) => {
   const { slug } = c.req.param();
   const chapters = await fetchChapters(slug);
@@ -25,7 +25,7 @@ manga.get("/:slug/chapters", async (c) => {
 });
 
 // Get images for a specific chapter
-manga.get("/:slug/chapter/:chapter", async (c) => {
+manga.get("/:slug/chapters/:chapter", async (c) => {
   const { slug, chapter } = c.req.param();
   const images = await fetchImages(slug, chapter);
   return c.json({ success: true, data: { images } } as ApiResponse<{
