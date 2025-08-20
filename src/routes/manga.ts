@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { fetchDetails, fetchChapters, fetchImages } from "../services/manga.js";
-import type { ApiResponse } from "../types/index.js";
+import type { ApiResponse, Chapter, MangaDetails } from "../types/index.js";
 
 const manga = new Hono();
 
@@ -8,14 +8,20 @@ const manga = new Hono();
 manga.get("/:slug", async (c) => {
   const { slug } = c.req.param();
   const details = await fetchDetails(slug);
-  return c.json({ success: true, data: details } as ApiResponse<typeof details>);
+  return c.json({ success: true, data: details } as ApiResponse<MangaDetails>);
 });
 
 // List all manga chapters
 manga.get("/:slug/chapters", async (c) => {
   const { slug } = c.req.param();
   const chapters = await fetchChapters(slug);
-  return c.json({ success: true, data: chapters } as ApiResponse<typeof chapters>);
+  return c.json({
+    success: true,
+    data: { chapters, chapterCount: chapters.length },
+  } as ApiResponse<{
+    chapters: Chapter[];
+    chapterCount: number;
+  }>);
 });
 
 // Get images for a specific chapter

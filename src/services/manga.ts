@@ -64,13 +64,15 @@ export async function fetchChapters(slug: string): Promise<Chapter[]> {
 
       const numberMatch = href?.match(/chapter-(\d+)/);
       const number = numberMatch ? parseInt(numberMatch[1], 10) : null;
-      
-      return number && href ? {
-        name: link.text().trim(),
-        number,
-        url: href,
-        releaseDate: $(el).find(".chapter-release-date i").text().trim() || ""
-      } : null;
+
+      return number && href
+        ? {
+            name: link.text().trim(),
+            number,
+            url: href,
+            releaseDate: $(el).find(".chapter-release-date i").text().trim() || "",
+          }
+        : null;
     })
     .get()
     .filter(Boolean);
