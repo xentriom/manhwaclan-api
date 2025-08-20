@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { fetchMangaList, search } from "../services/search.js";
 import type { ApiResponse, SearchResponse } from "../types/index.js";
 import { ApiError } from "../utils/errors.js";
-import { MangaFilter } from "../utils/constants.js";
+import { Filters } from "../utils/constants.js";
 
 const searchRoutes = new Hono();
 
@@ -30,7 +30,7 @@ searchRoutes.get("/trending", async (c) => {
     throw new ApiError("Page parameter must be >= 1", 400);
   }
 
-  const results = await fetchMangaList(MangaFilter.Trending, page);
+  const results = await fetchMangaList(Filters.Trending, page);
   return c.json({ success: true, data: results } as ApiResponse<SearchResponse>);
 });
 
@@ -41,7 +41,7 @@ searchRoutes.get("/latest", async (c) => {
     throw new ApiError("Page parameter must be >= 1", 400);
   }
 
-  const results = await fetchMangaList(MangaFilter.Latest, page);
+  const results = await fetchMangaList(Filters.Latest, page);
   return c.json({ success: true, data: results } as ApiResponse<SearchResponse>);
 });
 
@@ -52,7 +52,7 @@ searchRoutes.get("/new", async (c) => {
     throw new ApiError("Page parameter must be >= 1", 400);
   }
 
-  const results = await fetchMangaList(MangaFilter.NewManga, page);
+  const results = await fetchMangaList(Filters.New, page);
   return c.json({ success: true, data: results } as ApiResponse<SearchResponse>);
 });
 
@@ -63,7 +63,7 @@ searchRoutes.get("/popular", async (c) => {
     throw new ApiError("Page parameter must be >= 1", 400);
   }
 
-  const results = await fetchMangaList(MangaFilter.Popular, page);
+  const results = await fetchMangaList(Filters.Popular, page);
   return c.json({ success: true, data: results } as ApiResponse<SearchResponse>);
 });
 

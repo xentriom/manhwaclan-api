@@ -91,6 +91,5 @@ export async function fetchImages(slug: string, chapter: string): Promise<string
     .get()
     .filter(Boolean);
 
-  if (imageUrls.length === 0) throw new ApiError("No images found for the chapter.", 404);
   return imageUrls;
 }

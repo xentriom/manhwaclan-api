@@ -10,11 +10,13 @@ export const httpClient = axios.create({
   },
 });
 
-export enum MangaFilter {
+export enum Filters {
+  Alphabetical = "alphabet",
   Trending = "trending",
   Latest = "latest",
-  NewManga = "new-manga",
+  New = "new-manga",
   Popular = "views",
+  Rating = "rating",
 }
 
-export type MangaFilterValue = `${MangaFilter}`;
+export type FilterValues = `${Filters}`;

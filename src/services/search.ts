@@ -1,8 +1,18 @@
 import * as cheerio from "cheerio";
-import { BASE_URL, httpClient, type MangaFilterValue } from "../utils/constants.js";
+import { BASE_URL, httpClient, type FilterValues } from "../utils/constants.js";
 import { randomHeader } from "../utils/headers.js";
-import { ApiError } from "../utils/errors.js";
 import type { SearchResponse } from "../types/index.js";
+
+function parsePagination($: cheerio.CheerioAPI, page: number) {
+  const totalPagesText = $(".wp-pagenavi .pages").text();
+  const totalPages = Number(totalPagesText.match(/of\s+(\d+)/)?.[1] ?? 1);
+  return {
+    page,
+    totalPages,
+    hasNext: page < totalPages,
+    hasPrev: page > 1,
+  };
+}
 
 export async function search(query: string, page: number): Promise<SearchResponse> {
   const url = `${BASE_URL}/?s=${encodeURIComponent(query)}&post_type=wp-manga&page=${page}`;
@@ -19,7 +29,7 @@ export async function search(query: string, page: number): Promise<SearchRespons
       return {
         title,
         url: href,
-        slug: href?.split("/manga/")[1]?.replace(/\/$/, "") ?? "",
+        slug: href.match(/\/manga\/([^/]+)/)?.[1] ?? "",
         imageUrl: $el.find(".tab-thumb img").attr("src") ?? "",
         rating: $el.find(".meta-item.rating .score").text().trim() || null,
       };
@@ -27,26 +37,20 @@ export async function search(query: string, page: number): Promise<SearchRespons
     .get()
     .filter((item): item is NonNullable<typeof item> => item !== null);
 
-  if (!results.length) throw new ApiError("No results found", 404);
-
-  const totalPagesText = $(".wp-pagenavi .pages").text();
-  const totalPages = Number(totalPagesText.match(/of\s+(\d+)/)?.[1] ?? 1);
+  if (results.length === 0) {
+    return {
+      results: [],
+      pagination: { page, totalPages: 1, hasNext: false, hasPrev: false },
+    };
+  }
 
   return {
     results,
-    pagination: {
-      page,
-      totalPages,
-      hasNext: page < totalPages,
-      hasPrev: page > 1,
-    },
+    pagination: parsePagination($, page),
   };
 }
 
-export async function fetchMangaList(
-  filter: MangaFilterValue,
-  page: number,
-): Promise<SearchResponse> {
+export async function fetchMangaList(filter: FilterValues, page: number): Promise<SearchResponse> {
   const url = `${BASE_URL}/manga/page/${page}/?m_orderby=${filter}`;
   const { data } = await httpClient.get(url, { headers: randomHeader() });
   const $ = cheerio.load(data);
@@ -70,18 +74,15 @@ export async function fetchMangaList(
     .get()
     .filter((item): item is NonNullable<typeof item> => item !== null);
 
-  if (!results.length) throw new ApiError("No results found", 404);
-
-  const totalPagesText = $(".wp-pagenavi .pages").text();
-  const totalPages = Number(totalPagesText.match(/of\s+(\d+)/)?.[1] ?? 1);
+  if (results.length === 0) {
+    return {
+      results: [],
+      pagination: { page, totalPages: 1, hasNext: false, hasPrev: false },
+    };
+  }
 
   return {
     results,
-    pagination: {
-      page,
-      totalPages,
-      hasNext: page < totalPages,
-      hasPrev: page > 1,
-    },
+    pagination: parsePagination($, page),
   };
 }
