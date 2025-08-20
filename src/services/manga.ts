@@ -15,7 +15,13 @@ export async function fetchDetails(slug: string): Promise<MangaDetails> {
   return {
     // Basic info
     title,
-    summary: $(".description-summary").text().trim() || "No summary available",
+    summary: $(".description-summary")
+      .text()
+      .trim()
+      .replace(/^Read [^/]+\/.*?\n/, "")
+      .replace(/\s*Show more\s*$/, "")
+      .replace(/\n\s*\n/g, "\n")
+      .trim(),
     coverImage: $(".summary_image img").attr("src") || "",
 
     // Metadata
