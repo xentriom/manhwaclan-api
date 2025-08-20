@@ -37,7 +37,6 @@ export async function fetchDetails(slug: string): Promise<MangaDetails> {
       .replace(/\n\s*\n/g, "\n")
       .trim(),
     coverImage: $(".summary_image img").attr("src") || "",
-
     type: postContentItems.filter(':contains("Type")').find(".summary-content").text().trim(),
     status: postContentItems.filter(':contains("Status")').find(".summary-content").text().trim(),
     releaseYear: postContentItems
@@ -45,10 +44,8 @@ export async function fetchDetails(slug: string): Promise<MangaDetails> {
       .find(".summary-content")
       .text()
       .trim(),
-
     rating: $(".post-total-rating .score").text().trim(),
     rank: postContentItems.filter(':contains("Rank")').find(".summary-content").text().trim(),
-
     alternativeTitles: postContentItems
       .filter(':contains("Alternative")')
       .find(".summary-content")

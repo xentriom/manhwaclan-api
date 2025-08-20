@@ -7,15 +7,13 @@ import searchRoutes from "./routes/search.js";
 
 const app = new Hono();
 
-// Error handling middleware
 app.onError((err, c) => {
   const status = err instanceof ApiError ? err.status : 500;
   return c.json({ success: false, error: err.message }, status as ContentfulStatusCode);
 });
 
-// Health check route
 app.get("/", (c) => {
-  return c.text("Hello Hono!");
+  return c.text("Welcome to Toonga API");
 });
 
 app.route("/manga", mangaRoutes);

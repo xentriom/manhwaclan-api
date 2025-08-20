@@ -1,5 +1,5 @@
 {
-  "name": "hono",
+  "name": "toonga-api",
   "type": "module",
   "scripts": {
     "format": "prettier --write ."
