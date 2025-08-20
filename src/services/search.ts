@@ -19,20 +19,18 @@ export async function search(query: string, page: number): Promise<SearchRespons
       return {
         title,
         url: href,
-        slug: href.split("/manga/")[1]?.replace(/\/$/, ""),
+        slug: href?.split("/manga/")[1]?.replace(/\/$/, "") ?? "",
+        imageUrl: $el.find(".tab-thumb img").attr("src") ?? "",
+        rating: $el.find(".meta-item.rating .score").text().trim() || null,
       };
     })
     .get()
-    .filter(Boolean);
+    .filter((item): item is NonNullable<typeof item> => item !== null);
 
   if (!results.length) throw new ApiError("No results found", 404);
 
-  const totalPages = parseInt(
-    $(".wp-pagenavi .pages")
-      .text()
-      .match(/of (\d+)/)?.[1] ?? "1",
-    10,
-  );
+  const totalPagesText = $(".wp-pagenavi .pages").text();
+  const totalPages = Number(totalPagesText.match(/of\s+(\d+)/)?.[1] ?? 1);
 
   return {
     results,
@@ -53,33 +51,26 @@ export async function trending(page: number): Promise<SearchResponse> {
   const results = $(".page-listing-item .col-6.col-md-3")
     .map((_, el) => {
       const $el = $(el);
-
-      const mangaItem = $el.find(".item-thumb");
-      const link = mangaItem.find("a");
+      const link = $el.find(".item-thumb a");
       const title = link.attr("title");
       const href = link.attr("href");
-      const imageUrl = mangaItem.find("img").attr("src");
-      const rating = $el.find(".meta-item.rating .score").text().trim();
-
       if (!title || !href) return null;
 
       return {
         title,
         url: href,
-        slug: href.split("/manga/")[1]?.replace(/\/$/, ""),
-        imageUrl: imageUrl || "",
-        rating: rating || "",
+        slug: href.match(/\/manga\/([^/]+)/)?.[1] ?? "",
+        imageUrl: $el.find(".item-thumb img").attr("src") ?? "",
+        rating: $el.find(".meta-item.rating .score").text().trim() || null,
       };
     })
     .get()
-    .filter(Boolean);
+    .filter((item): item is NonNullable<typeof item> => item !== null);
 
-  const totalPages = parseInt(
-    $(".wp-pagenavi .pages")
-      .text()
-      .match(/of (\d+)/)?.[1] ?? "1",
-    10,
-  );
+  if (!results.length) throw new ApiError("No results found", 404);
+
+  const totalPagesText = $(".wp-pagenavi .pages").text();
+  const totalPages = Number(totalPagesText.match(/of\s+(\d+)/)?.[1] ?? 1);
 
   return {
     results,

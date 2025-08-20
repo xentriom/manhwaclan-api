@@ -21,25 +21,23 @@ searchRoutes.get("/", async (c) => {
   return c.json({ success: true, data: results } as ApiResponse<SearchResponse>);
 });
 
-searchRoutes.get("/trending/:page?", async (c) => {
-  const { page } = c.req.param();
-  const pageNumber = parseInt(page ?? "1", 10);
-  if (isNaN(pageNumber) || pageNumber < 1) {
+searchRoutes.get("/trending", async (c) => {
+  const page = parseInt(c.req.query("page") ?? "1", 10);
+  if (isNaN(page) || page < 1) {
     throw new ApiError("Page is invalid", 400);
   }
 
-  const results = await trending(pageNumber);
+  const results = await trending(page);
   return c.json({ success: true, data: results } as ApiResponse<SearchResponse>);
 });
 
-searchRoutes.get("/latest/:page?", async (c) => {
-  const { page } = c.req.param();
-  const pageNumber = parseInt(page ?? "1", 10);
-  if (isNaN(pageNumber) || pageNumber < 1) {
+searchRoutes.get("/latest", async (c) => {
+  const page = parseInt(c.req.query("page") ?? "1", 10);
+  if (isNaN(page) || page < 1) {
     throw new ApiError("Page is invalid", 400);
   }
 
-  const results = await latest(pageNumber);
+  const results = await latest(page);
   return c.json({ success: true, data: results } as ApiResponse<SearchResponse>);
 });
 
