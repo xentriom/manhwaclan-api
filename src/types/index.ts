@@ -14,8 +14,10 @@ export interface MangaDetails {
 }
 
 export interface Chapter {
+  name: string;
   number: number;
   url: string;
+  releaseDate: string;
 }
 
 export interface SearchResult {

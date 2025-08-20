@@ -59,15 +59,23 @@ export async function fetchChapters(slug: string): Promise<Chapter[]> {
 
   const chapters = $(".wp-manga-chapter")
     .map((_, el) => {
-      const link = $(el).find("a").attr("href");
-      const numberMatch = link?.match(/chapter-(\d+)/);
+      const link = $(el).find("a");
+      const href = link.attr("href");
+
+      const numberMatch = href?.match(/chapter-(\d+)/);
       const number = numberMatch ? parseInt(numberMatch[1], 10) : null;
-      return number && link ? { number, url: link } : null;
+      
+      return number && href ? {
+        name: link.text().trim(),
+        number,
+        url: href,
+        releaseDate: $(el).find(".chapter-release-date i").text().trim() || ""
+      } : null;
     })
     .get()
     .filter(Boolean);
 
-  return chapters.sort((a, b) => a.number - b.number); // ascending
+  return chapters.sort((a, b) => a.number - b.number);
 }
 
 export async function fetchImages(slug: string, chapter: string): Promise<string[]> {
