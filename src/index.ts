@@ -14,7 +14,7 @@ app.use(
   cors({
     origin: "*",
     allowMethods: ["GET"],
-  })
+  }),
 );
 
 // Global error

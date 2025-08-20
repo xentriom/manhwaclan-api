@@ -1,18 +1,8 @@
-import axios from "axios";
 import * as cheerio from "cheerio";
 import { randomHeader } from "../utils/headers.js";
 import { ApiError } from "../utils/errors.js";
-import type { MangaDetails, Chapter, SearchResponse } from "../types/index.js";
-
-const BASE_URL = "https://manhwaclan.com";
-
-const httpClient = axios.create({
-  timeout: 8000,
-  maxRedirects: 3,
-  headers: {
-    "Accept-Encoding": "gzip, deflate, br",
-  },
-});
+import type { MangaDetails, Chapter } from "../types/index.js";
+import { BASE_URL, httpClient } from "../utils/constants.js";
 
 export async function fetchDetails(slug: string): Promise<MangaDetails> {
   const url = `${BASE_URL}/manga/${encodeURIComponent(slug)}/`;
@@ -103,44 +93,4 @@ export async function fetchImages(slug: string, chapter: string): Promise<string
 
   if (imageUrls.length === 0) throw new ApiError("No images found for the chapter.", 404);
   return imageUrls;
-}
-
-export async function search(query: string, page: number): Promise<SearchResponse> {
-  const url = `${BASE_URL}/?s=${encodeURIComponent(query)}&post_type=wp-manga&page=${page}`;
-  const { data } = await httpClient.get(url, { headers: randomHeader() });
-  const $ = cheerio.load(data);
-
-  const results = $(".c-tabs-item__content")
-    .map((_, el) => {
-      const $el = $(el);
-      const title = $el.find(".post-title").text().trim();
-      const href = $el.find("a").attr("href");
-      if (!title || !href) return null;
-      return {
-        title,
-        url: href,
-        slug: href.split("/manga/")[1]?.replace(/\/$/, ""),
-      };
-    })
-    .get()
-    .filter(Boolean);
-
-  if (!results.length) throw new ApiError("No results found", 404);
-
-  const totalPages = parseInt(
-    $(".wp-pagenavi .pages")
-      .text()
-      .match(/of (\d+)/)?.[1] ?? "1",
-    10,
-  );
-
-  return {
-    results,
-    pagination: {
-      page,
-      totalPages,
-      hasNext: page < totalPages,
-      hasPrev: page > 1,
-    },
-  };
 }

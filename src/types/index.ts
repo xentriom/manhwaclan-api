@@ -24,6 +24,8 @@ export interface SearchResult {
   title: string;
   url: string;
   slug: string;
+  imageUrl?: string;
+  rating?: string;
 }
 
 export interface Pagination {
