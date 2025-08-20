@@ -13,27 +13,33 @@ export async function fetchDetails(slug: string): Promise<MangaDetails> {
   if (!title) throw new ApiError("Manga not found", 404);
 
   return {
+    // Basic info
     title,
-    summary: $(".summary_content .post-content p").text().trim(),
-    imageUrl: $(".summary_image img").attr("src"),
+    summary: $(".description-summary .summary_content p").text().trim(),
+    coverImage: $(".summary_image img").attr("src") || "",
+
+    // Metadata
+    type: $('.post-content_item:contains("Type") .summary-content').text().trim(),
+    status: $('.post-content_item:contains("Status") .summary-content').text().trim(),
+    releaseYear: $('.post-content_item:contains("Release") .summary-content').text().trim(),
+
+    // Statistics
     rating: $(".post-total-rating .score").text().trim(),
-    rank: $('.post-content_item:contains("Rank") .summary-content')
+    rank: $('.post-content_item:contains("Rank") .summary-content').text().trim(),
+
+    // Related Content
+    alternativeTitles: $('.post-content_item:contains("Alternative") .summary-content')
       .text()
       .trim(),
-    alternative: $(
-      '.post-content_item:contains("Alternative") .summary-content',
-    )
-      .text()
-      .trim(),
-    genres: $(".genres-content a")
+    authors: $(".author-content a[rel='tag']")
+      .map((_, el) => ({
+        name: $(el).text().trim(),
+        url: $(el).attr("href") || "",
+      }))
+      .get(),
+    genres: $(".genres-content a[rel='tag']")
       .map((_, el) => $(el).text().trim())
       .get(),
-    type: $('.post-content_item:contains("Type") .summary-content')
-      .text()
-      .trim(),
-    status: $('.post-content_item:contains("Status") .summary-content')
-      .text()
-      .trim(),
   };
 }
 
@@ -55,10 +61,7 @@ export async function fetchChapters(slug: string): Promise<Chapter[]> {
   return chapters.sort((a, b) => a.number - b.number); // ascending
 }
 
-export async function fetchImages(
-  slug: string,
-  chapter: string,
-): Promise<string[]> {
+export async function fetchImages(slug: string, chapter: string): Promise<string[]> {
   const url = `https://manhwaclan.com/manga/${slug}/chapter-${chapter}/`;
   const { data } = await axios.get(url, { headers: randomHeader() });
   const $ = cheerio.load(data);

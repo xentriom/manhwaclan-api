@@ -1,13 +1,15 @@
 export interface MangaDetails {
   title: string;
   summary: string;
-  imageUrl?: string;
-  rating: string;
-  rank: string;
-  alternative: string;
-  genres: string[];
+  coverImage: string;
   type: string;
   status: string;
+  releaseYear: string;
+  rating: string;
+  rank: string;
+  alternativeTitles: string;
+  authors: { name: string; url: string }[];
+  genres: string[];
 }
 
 export interface Chapter {

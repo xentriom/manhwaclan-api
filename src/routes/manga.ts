@@ -8,18 +8,14 @@ const manga = new Hono();
 manga.get("/:slug", async (c) => {
   const { slug } = c.req.param();
   const details = await fetchDetails(slug);
-  return c.json({ success: true, data: details } as ApiResponse<
-    typeof details
-  >);
+  return c.json({ success: true, data: details } as ApiResponse<typeof details>);
 });
 
 // List all manga chapters
 manga.get("/:slug/chapters", async (c) => {
   const { slug } = c.req.param();
   const chapters = await fetchChapters(slug);
-  return c.json({ success: true, data: chapters } as ApiResponse<
-    typeof chapters
-  >);
+  return c.json({ success: true, data: chapters } as ApiResponse<typeof chapters>);
 });
 
 // Get images for a specific chapter
