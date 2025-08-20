@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
-import { ApiError } from "@/utils/errors.js";
-import mangaRoutes from "@/routes/manga.js";
+import { ApiError } from "./utils/errors.js";
+import mangaRoutes from "./routes/manga.js";
 
 const app = new Hono();
 

@@ -1,8 +1,8 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
-import { randomHeader } from "@/utils/headers.js";
-import { ApiError } from "@/utils/errors.js";
-import type { MangaDetails, Chapter, SearchResponse } from "@/types/index.js";
+import { randomHeader } from "../utils/headers.js";
+import { ApiError } from "../utils/errors.js";
+import type { MangaDetails, Chapter, SearchResponse } from "../types/index.js";
 
 export async function fetchDetails(slug: string): Promise<MangaDetails> {
   const url = `https://manhwaclan.com/manga/${slug}/`;

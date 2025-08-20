@@ -1,6 +1,6 @@
 import { Hono } from "hono";
-import { fetchDetails, fetchChapters, fetchImages } from "@/services/manga.js";
-import type { ApiResponse } from "@/types/index.js";
+import { fetchDetails, fetchChapters, fetchImages } from "../services/manga.js";
+import type { ApiResponse } from "../types/index.js";
 
 const manga = new Hono();
 
