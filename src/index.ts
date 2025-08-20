@@ -3,6 +3,7 @@ import type { ContentfulStatusCode } from "hono/utils/http-status";
 import { ApiError } from "./utils/errors.js";
 import mangaRoutes from "./routes/manga.js";
 import authorRoutes from "./routes/author.js";
+import searchRoutes from "./routes/search.js";
 
 const app = new Hono();
 
@@ -19,5 +20,6 @@ app.get("/", (c) => {
 
 app.route("/manga", mangaRoutes);
 app.route("/author", authorRoutes);
+app.route("/search", searchRoutes);
 
 export default app;

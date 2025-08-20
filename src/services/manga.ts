@@ -4,8 +4,10 @@ import { randomHeader } from "../utils/headers.js";
 import { ApiError } from "../utils/errors.js";
 import type { MangaDetails, Chapter, SearchResponse } from "../types/index.js";
 
+const BASE_URL = "https://manhwaclan.com";
+
 export async function fetchDetails(slug: string): Promise<MangaDetails> {
-  const url = `https://manhwaclan.com/manga/${slug}/`;
+  const url = `${BASE_URL}/manga/${encodeURIComponent(slug)}/`;
   const { data } = await axios.get(url, { headers: randomHeader() });
   const $ = cheerio.load(data);
 
@@ -51,7 +53,7 @@ export async function fetchDetails(slug: string): Promise<MangaDetails> {
 }
 
 export async function fetchChapters(slug: string): Promise<Chapter[]> {
-  const url = `https://manhwaclan.com/manga/${slug}/`;
+  const url = `${BASE_URL}/manga/${encodeURIComponent(slug)}/`;
   const { data } = await axios.get(url, { headers: randomHeader() });
   const $ = cheerio.load(data);
 
@@ -69,20 +71,25 @@ export async function fetchChapters(slug: string): Promise<Chapter[]> {
 }
 
 export async function fetchImages(slug: string, chapter: string): Promise<string[]> {
-  const url = `https://manhwaclan.com/manga/${slug}/chapter-${chapter}/`;
+  const url = `${BASE_URL}/manga/${encodeURIComponent(slug)}/chapter-${chapter}/`;
+
   const { data } = await axios.get(url, { headers: randomHeader() });
   const $ = cheerio.load(data);
 
-  const images = $(".page-break img")
-    .map((_, el) => $(el).attr("src")?.trim())
-    .get();
-  if (!images.length) throw new ApiError("No images found", 404);
+  const imageUrls = $(".page-break img")
+    .map((i, element) => $(element).attr("src")?.trim())
+    .get()
+    .filter(Boolean);
 
-  return images;
+  if (imageUrls.length === 0) {
+    throw new ApiError("No images found for the chapter.", 404);
+  }
+
+  return imageUrls;
 }
 
-export async function search(query: string, page = 1): Promise<SearchResponse> {
-  const url = `https://manhwaclan.com/?s=${encodeURIComponent(query)}&post_type=wp-manga&page=${page}`;
+export async function search(query: string, page: number): Promise<SearchResponse> {
+  const url = `${BASE_URL}/?s=${encodeURIComponent(query)}&post_type=wp-manga&page=${page}`;
   const { data } = await axios.get(url, { headers: randomHeader() });
   const $ = cheerio.load(data);
 
