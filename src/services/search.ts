@@ -1,5 +1,5 @@
 import * as cheerio from "cheerio";
-import { BASE_URL, httpClient } from "../utils/constants.js";
+import { BASE_URL, httpClient, type MangaFilterValue } from "../utils/constants.js";
 import { randomHeader } from "../utils/headers.js";
 import { ApiError } from "../utils/errors.js";
 import type { SearchResponse } from "../types/index.js";
@@ -43,8 +43,11 @@ export async function search(query: string, page: number): Promise<SearchRespons
   };
 }
 
-export async function trending(page: number): Promise<SearchResponse> {
-  const url = `${BASE_URL}/manga/page/${page}/?m_orderby=trending`;
+export async function fetchMangaList(
+  filter: MangaFilterValue,
+  page: number,
+): Promise<SearchResponse> {
+  const url = `${BASE_URL}/manga/page/${page}/?m_orderby=${filter}`;
   const { data } = await httpClient.get(url, { headers: randomHeader() });
   const $ = cheerio.load(data);
 
@@ -74,31 +77,6 @@ export async function trending(page: number): Promise<SearchResponse> {
 
   return {
     results,
-    pagination: {
-      page,
-      totalPages,
-      hasNext: page < totalPages,
-      hasPrev: page > 1,
-    },
-  };
-}
-
-export async function latest(page: number): Promise<SearchResponse> {
-  const url = `${BASE_URL}/manga/page/${page}/?m_orderby=latest`;
-  const { data } = await httpClient.get(url, { headers: randomHeader() });
-  const $ = cheerio.load(data);
-
-  // TODO: Implement latest manga
-
-  const totalPages = parseInt(
-    $(".wp-pagenavi .pages")
-      .text()
-      .match(/of (\d+)/)?.[1] ?? "1",
-    10,
-  );
-
-  return {
-    results: [],
     pagination: {
       page,
       totalPages,

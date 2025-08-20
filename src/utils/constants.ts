@@ -9,3 +9,12 @@ export const httpClient = axios.create({
     "Accept-Encoding": "gzip, deflate, br",
   },
 });
+
+export enum MangaFilter {
+  Trending = "trending",
+  Latest = "latest",
+  NewManga = "new-manga",
+  Popular = "views",
+}
+
+export type MangaFilterValue = `${MangaFilter}`;
