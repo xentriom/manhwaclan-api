@@ -6,16 +6,28 @@ import type { MangaDetails, Chapter, SearchResponse } from "../types/index.js";
 
 const BASE_URL = "https://manhwaclan.com";
 
+const httpClient = axios.create({
+  timeout: 8000,
+  maxRedirects: 3,
+  headers: {
+    "Accept-Encoding": "gzip, deflate, br",
+  },
+});
+
 export async function fetchDetails(slug: string): Promise<MangaDetails> {
   const url = `${BASE_URL}/manga/${encodeURIComponent(slug)}/`;
-  const { data } = await axios.get(url, { headers: randomHeader() });
+  const { data } = await httpClient.get(url, { headers: randomHeader() });
   const $ = cheerio.load(data);
 
   const title = $(".post-title h1").text().trim();
   if (!title) throw new ApiError("Manga not found", 404);
 
+  const postContentItems = $(".post-content_item");
+  const authorContent = $(".author-content a[rel='tag']");
+  const genresContent = $(".genres-content a[rel='tag']");
+  const wpMangaChapters = $(".wp-manga-chapter");
+
   return {
-    // Basic info
     title,
     summary: $(".description-summary")
       .text()
@@ -26,40 +38,42 @@ export async function fetchDetails(slug: string): Promise<MangaDetails> {
       .trim(),
     coverImage: $(".summary_image img").attr("src") || "",
 
-    // Metadata
-    type: $('.post-content_item:contains("Type") .summary-content').text().trim(),
-    status: $('.post-content_item:contains("Status") .summary-content').text().trim(),
-    releaseYear: $('.post-content_item:contains("Release") .summary-content').text().trim(),
-
-    // Statistics
-    rating: $(".post-total-rating .score").text().trim(),
-    rank: $('.post-content_item:contains("Rank") .summary-content').text().trim(),
-
-    // Related Content
-    alternativeTitles: $('.post-content_item:contains("Alternative") .summary-content')
+    type: postContentItems.filter(':contains("Type")').find(".summary-content").text().trim(),
+    status: postContentItems.filter(':contains("Status")').find(".summary-content").text().trim(),
+    releaseYear: postContentItems
+      .filter(':contains("Release")')
+      .find(".summary-content")
       .text()
       .trim(),
-    authors: $(".author-content a[rel='tag']")
+
+    rating: $(".post-total-rating .score").text().trim(),
+    rank: postContentItems.filter(':contains("Rank")').find(".summary-content").text().trim(),
+
+    alternativeTitles: postContentItems
+      .filter(':contains("Alternative")')
+      .find(".summary-content")
+      .text()
+      .trim(),
+    authors: authorContent
       .map((_, el) => ({
         name: $(el).text().trim(),
         url: $(el).attr("href") || "",
       }))
       .get(),
-    genres: $(".genres-content a[rel='tag']")
-      .map((_, el) => $(el).text().trim())
-      .get(),
-    chapterCount: $(".wp-manga-chapter").length,
+    genres: genresContent.map((_, el) => $(el).text().trim()).get(),
+    chapterCount: wpMangaChapters.length,
   };
 }
 
 export async function fetchChapters(slug: string): Promise<Chapter[]> {
   const url = `${BASE_URL}/manga/${encodeURIComponent(slug)}/`;
-  const { data } = await axios.get(url, { headers: randomHeader() });
+  const { data } = await httpClient.get(url, { headers: randomHeader() });
   const $ = cheerio.load(data);
 
   const chapters = $(".wp-manga-chapter")
     .map((_, el) => {
-      const link = $(el).find("a");
+      const $el = $(el);
+      const link = $el.find("a");
       const href = link.attr("href");
 
       const numberMatch = href?.match(/chapter-(\d+)/);
@@ -70,7 +84,7 @@ export async function fetchChapters(slug: string): Promise<Chapter[]> {
             name: link.text().trim(),
             number,
             url: href,
-            releaseDate: $(el).find(".chapter-release-date i").text().trim() || "",
+            releaseDate: $el.find(".chapter-release-date i").text().trim() || "",
           }
         : null;
     })
@@ -83,7 +97,7 @@ export async function fetchChapters(slug: string): Promise<Chapter[]> {
 export async function fetchImages(slug: string, chapter: string): Promise<string[]> {
   const url = `${BASE_URL}/manga/${encodeURIComponent(slug)}/chapter-${chapter}/`;
 
-  const { data } = await axios.get(url, { headers: randomHeader() });
+  const { data } = await httpClient.get(url, { headers: randomHeader() });
   const $ = cheerio.load(data);
 
   const imageUrls = $(".page-break img")
@@ -100,13 +114,14 @@ export async function fetchImages(slug: string, chapter: string): Promise<string
 
 export async function search(query: string, page: number): Promise<SearchResponse> {
   const url = `${BASE_URL}/?s=${encodeURIComponent(query)}&post_type=wp-manga&page=${page}`;
-  const { data } = await axios.get(url, { headers: randomHeader() });
+  const { data } = await httpClient.get(url, { headers: randomHeader() });
   const $ = cheerio.load(data);
 
   const results = $(".c-tabs-item__content")
     .map((_, el) => {
-      const title = $(el).find(".post-title").text().trim();
-      const href = $(el).find("a").attr("href");
+      const $el = $(el);
+      const title = $el.find(".post-title").text().trim();
+      const href = $el.find("a").attr("href");
       if (!title || !href) return null;
       return {
         title,
