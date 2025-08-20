@@ -96,7 +96,6 @@ export async function fetchChapters(slug: string): Promise<Chapter[]> {
 
 export async function fetchImages(slug: string, chapter: string): Promise<string[]> {
   const url = `${BASE_URL}/manga/${encodeURIComponent(slug)}/chapter-${chapter}/`;
-
   const { data } = await httpClient.get(url, { headers: randomHeader() });
   const $ = cheerio.load(data);
 
@@ -105,10 +104,7 @@ export async function fetchImages(slug: string, chapter: string): Promise<string
     .get()
     .filter(Boolean);
 
-  if (imageUrls.length === 0) {
-    throw new ApiError("No images found for the chapter.", 404);
-  }
-
+  if (imageUrls.length === 0) throw new ApiError("No images found for the chapter.", 404);
   return imageUrls;
 }
 
