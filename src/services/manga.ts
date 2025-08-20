@@ -12,10 +12,32 @@ export async function fetchDetails(slug: string): Promise<MangaDetails> {
   const title = $(".post-title h1").text().trim();
   if (!title) throw new ApiError("Manga not found", 404);
 
+  // Debug: Let's see what we can find
+  const summaryElement = $(".description-summary .summary_content");
+  const summaryText = summaryElement.text().trim();
+  
+  // If that doesn't work, try alternative selectors
+  const alternativeSummary = $(".summary_content").text().trim();
+  const descriptionSummary = $(".description-summary").text().trim();
+  
+  // Try more specific selectors based on the HTML structure
+  const pElements = $(".description-summary .summary_content p");
+  const secondParagraph = pElements.eq(1).text().trim();
+  const allParagraphs = pElements.map((_, el) => $(el).text().trim()).get().join(" ");
+  
+  // Debug logging
+  console.log("Summary selectors found:", {
+    summaryText: summaryText || "NOT FOUND",
+    alternativeSummary: alternativeSummary || "NOT FOUND", 
+    descriptionSummary: descriptionSummary || "NOT FOUND",
+    secondParagraph: secondParagraph || "NOT FOUND",
+    allParagraphs: allParagraphs || "NOT FOUND"
+  });
+
   return {
     // Basic info
     title,
-    summary: $(".description-summary .summary_content p").text().trim(),
+    summary: summaryText || alternativeSummary || descriptionSummary || "No summary available",
     coverImage: $(".summary_image img").attr("src") || "",
 
     // Metadata
