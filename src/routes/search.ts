@@ -6,25 +6,25 @@ import { ApiError } from "../utils/errors.js";
 const searchRoutes = new Hono();
 
 searchRoutes.get("/", async (c) => {
-  const { q: query, page } = c.req.query();
-
-  if (!query) {
-    throw new ApiError("Query parameter 'q' is required", 400);
+  const query = c.req.query("q") ?? c.req.query("query");
+  const searchTerm = query?.trim();
+  if (!searchTerm) {
+    throw new ApiError("Query parameter 'q' or 'query' is required", 400);
   }
 
-  const pageNumber = parseInt(page ?? "1", 10);
-  if (isNaN(pageNumber) || pageNumber < 1) {
-    throw new ApiError("Page is invalid", 400);
+  const page = parseInt(c.req.query("page") ?? "1", 10);
+  if (isNaN(page) || page < 1) {
+    throw new ApiError("Page parameter must be >= 1", 400);
   }
 
-  const results = await search(query, pageNumber);
+  const results = await search(searchTerm, page);
   return c.json({ success: true, data: results } as ApiResponse<SearchResponse>);
 });
 
 searchRoutes.get("/trending", async (c) => {
   const page = parseInt(c.req.query("page") ?? "1", 10);
   if (isNaN(page) || page < 1) {
-    throw new ApiError("Page is invalid", 400);
+    throw new ApiError("Page parameter must be >= 1", 400);
   }
 
   const results = await trending(page);
@@ -34,7 +34,7 @@ searchRoutes.get("/trending", async (c) => {
 searchRoutes.get("/latest", async (c) => {
   const page = parseInt(c.req.query("page") ?? "1", 10);
   if (isNaN(page) || page < 1) {
-    throw new ApiError("Page is invalid", 400);
+    throw new ApiError("Page parameter must be >= 1", 400);
   }
 
   const results = await latest(page);
