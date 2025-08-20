@@ -10,6 +10,7 @@ export interface MangaDetails {
   alternativeTitles: string;
   authors: { name: string; url: string }[];
   genres: string[];
+  chapterCount: number;
 }
 
 export interface Chapter {

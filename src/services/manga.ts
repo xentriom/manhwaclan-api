@@ -46,6 +46,7 @@ export async function fetchDetails(slug: string): Promise<MangaDetails> {
     genres: $(".genres-content a[rel='tag']")
       .map((_, el) => $(el).text().trim())
       .get(),
+    chapterCount: $(".wp-manga-chapter").length,
   };
 }
 
