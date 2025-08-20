@@ -2,10 +2,14 @@
   "name": "hono",
   "type": "module",
   "dependencies": {
-    "hono": "^4.8.9"
+    "axios": "^1.11.0",
+    "cheerio": "^1.1.2",
+    "hono": "^4.8.9",
+    "user-agents": "^1.1.636"
   },
   "devDependencies": {
     "@types/node": "^20.11.17",
+    "@types/user-agents": "^1.0.4",
     "typescript": "^5.8.3"
   }
 }
