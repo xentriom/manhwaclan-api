@@ -1,5 +1,5 @@
 import * as cheerio from "cheerio";
-import { BASE_URL, httpClient, type FilterValues } from "../utils/constants.js";
+import { BASE_URL, httpClient, sortMap, SortOptions } from "../utils/constants.js";
 import { randomHeader } from "../utils/headers.js";
 import type { SearchResponse } from "../types/index.js";
 
@@ -50,8 +50,8 @@ export async function search(query: string, page: number): Promise<SearchRespons
   };
 }
 
-export async function fetchMangaList(filter: FilterValues, page: number): Promise<SearchResponse> {
-  const url = `${BASE_URL}/manga/page/${page}/?m_orderby=${filter}`;
+export async function fetchMangaList(sortBy: SortOptions, page: number): Promise<SearchResponse> {
+  const url = `${BASE_URL}/manga/page/${page}/?m_orderby=${sortMap[sortBy]}`;
   const { data } = await httpClient.get(url, { headers: randomHeader() });
   const $ = cheerio.load(data);
 

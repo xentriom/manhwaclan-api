@@ -10,13 +10,22 @@ export const httpClient = axios.create({
   },
 });
 
-export enum Filters {
-  Alphabetical = "alphabet",
+export enum SortOptions {
+  Alphabetical = "alphabetical",
   Trending = "trending",
-  Latest = "latest",
-  New = "new-manga",
-  Popular = "views",
+  RecentlyAdded = "new",
+  RecentlyUpdated = "latest",
+  Popular = "popular",
   Rating = "rating",
 }
 
-export type FilterValues = `${Filters}`;
+export const sortMap: Record<SortOptions, string> = {
+  [SortOptions.Alphabetical]: "alphabet",
+  [SortOptions.Trending]: "trending",
+  [SortOptions.RecentlyAdded]: "new-manga",
+  [SortOptions.RecentlyUpdated]: "latest",
+  [SortOptions.Popular]: "views",
+  [SortOptions.Rating]: "rating",
+};
+
+export type SortOptionsValues = `${SortOptions}`;
