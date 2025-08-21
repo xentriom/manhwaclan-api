@@ -59,48 +59,4 @@ searchRoutes.get("/sort/:sort", async (c) => {
   return c.json({ success: true, data: results } as ApiResponse<SearchResponse>);
 });
 
-// Trending Manga
-searchRoutes.get("/trending", async (c) => {
-  const page = parseInt(c.req.query("page") ?? "1", 10);
-  if (isNaN(page) || page < 1) {
-    throw new ApiError("Page parameter must be >= 1", 400);
-  }
-
-  const results = await fetchMangaList(SortOptions.Trending, page);
-  return c.json({ success: true, data: results } as ApiResponse<SearchResponse>);
-});
-
-// Latest Manga
-searchRoutes.get("/latest", async (c) => {
-  const page = parseInt(c.req.query("page") ?? "1", 10);
-  if (isNaN(page) || page < 1) {
-    throw new ApiError("Page parameter must be >= 1", 400);
-  }
-
-  const results = await fetchMangaList(SortOptions.RecentlyUpdated, page);
-  return c.json({ success: true, data: results } as ApiResponse<SearchResponse>);
-});
-
-// New Manga
-searchRoutes.get("/new", async (c) => {
-  const page = parseInt(c.req.query("page") ?? "1", 10);
-  if (isNaN(page) || page < 1) {
-    throw new ApiError("Page parameter must be >= 1", 400);
-  }
-
-  const results = await fetchMangaList(SortOptions.RecentlyAdded, page);
-  return c.json({ success: true, data: results } as ApiResponse<SearchResponse>);
-});
-
-// Popular Manga
-searchRoutes.get("/popular", async (c) => {
-  const page = parseInt(c.req.query("page") ?? "1", 10);
-  if (isNaN(page) || page < 1) {
-    throw new ApiError("Page parameter must be >= 1", 400);
-  }
-
-  const results = await fetchMangaList(SortOptions.Popular, page);
-  return c.json({ success: true, data: results } as ApiResponse<SearchResponse>);
-});
-
 export default searchRoutes;

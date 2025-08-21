@@ -27,5 +27,3 @@ export const sortMap: Record<SortOptions, string> = {
   [SortOptions.Popular]: "views",
   [SortOptions.Rating]: "rating",
 };
-
-export type SortOptionsValues = `${SortOptions}`;
