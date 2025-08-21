@@ -40,7 +40,7 @@ searchRoutes.get("/genre/:genre", async (c) => {
     throw new ApiError("Invalid order_by parameter", 400);
   }
 
-  const results = await fetchGenreList(genre as GenreOptions, page);
+  const results = await fetchGenreList(genre as GenreOptions, page, orderBy as SortOptions);
   return c.json({ success: true, data: results } as ApiResponse<SearchResponse>);
 });
 

@@ -96,8 +96,9 @@ async function fetchMangaList(url: string, page: number): Promise<SearchResponse
 export const fetchGenreList = async (
   genre: GenreOptions,
   page: number,
+  orderBy: SortOptions,
 ): Promise<SearchResponse> => {
-  const url = `${BASE_URL}/manga-genre/${genreMap[genre]}/page/${page}`;
+  const url = `${BASE_URL}/manga-genre/${genreMap[genre]}/page/${page}/?m_orderby=${sortMap[orderBy]}`;
   return fetchMangaList(url, page);
 };
 
