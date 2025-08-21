@@ -1,8 +1,8 @@
 import { Hono } from "hono";
-import { fetchMangaList, search } from "../services/search.js";
+import { fetchGenreList, fetchSortedList, search } from "../services/search.js";
 import type { ApiResponse, SearchResponse } from "../types/index.js";
 import { ApiError } from "../utils/errors.js";
-import { SortOptions } from "../utils/constants.js";
+import { GenreOptions, SortOptions } from "../utils/constants.js";
 
 const searchRoutes = new Hono();
 
@@ -26,8 +26,8 @@ searchRoutes.get("/", async (c) => {
 // Search by genre
 searchRoutes.get("/genre/:genre", async (c) => {
   const genre = c.req.param("genre");
-  if (!genre) {
-    throw new ApiError("Genre parameter is required", 400);
+  if (!Object.values(GenreOptions).includes(genre as GenreOptions)) {
+    throw new ApiError("Invalid genre parameter", 400);
   }
 
   const page = parseInt(c.req.query("page") ?? "1", 10);
@@ -40,7 +40,8 @@ searchRoutes.get("/genre/:genre", async (c) => {
     throw new ApiError("Invalid order_by parameter", 400);
   }
 
-  return c.json({ success: true, data: [] });
+  const results = await fetchGenreList(genre as GenreOptions, page);
+  return c.json({ success: true, data: results } as ApiResponse<SearchResponse>);
 });
 
 // Search by sort
@@ -55,7 +56,7 @@ searchRoutes.get("/sort/:sort", async (c) => {
     throw new ApiError("Page parameter must be >= 1", 400);
   }
 
-  const results = await fetchMangaList(sort as SortOptions, page);
+  const results = await fetchSortedList(sort as SortOptions, page);
   return c.json({ success: true, data: results } as ApiResponse<SearchResponse>);
 });
 

@@ -1,5 +1,12 @@
 import * as cheerio from "cheerio";
-import { BASE_URL, httpClient, sortMap, SortOptions } from "../utils/constants.js";
+import {
+  BASE_URL,
+  httpClient,
+  genreMap,
+  GenreOptions,
+  sortMap,
+  SortOptions,
+} from "../utils/constants.js";
 import { randomHeader } from "../utils/headers.js";
 import type { SearchResponse } from "../types/index.js";
 
@@ -50,8 +57,7 @@ export async function search(query: string, page: number): Promise<SearchRespons
   };
 }
 
-export async function fetchMangaList(sortBy: SortOptions, page: number): Promise<SearchResponse> {
-  const url = `${BASE_URL}/manga/page/${page}/?m_orderby=${sortMap[sortBy]}`;
+async function fetchMangaList(url: string, page: number): Promise<SearchResponse> {
   const { data } = await httpClient.get(url, { headers: randomHeader() });
   const $ = cheerio.load(data);
 
@@ -85,4 +91,17 @@ export async function fetchMangaList(sortBy: SortOptions, page: number): Promise
     results,
     pagination: parsePagination($, page),
   };
+}
+
+export const fetchGenreList = async (
+  genre: GenreOptions,
+  page: number,
+): Promise<SearchResponse> => {
+  const url = `${BASE_URL}/manga-genre/${genreMap[genre]}/page/${page}`;
+  return fetchMangaList(url, page);
+};
+
+export async function fetchSortedList(sortBy: SortOptions, page: number): Promise<SearchResponse> {
+  const url = `${BASE_URL}/manga/page/${page}/?m_orderby=${sortMap[sortBy]}`;
+  return fetchMangaList(url, page);
 }
