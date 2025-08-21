@@ -60,21 +60,24 @@ GET /manga/solo-leveling/chapters
 ```json
 {
   "success": true,
-  "data": [
-    {
-      "name": "Chapter 1",
-      "number": 1,
-      "url": "https://manhwaclan.com/manga/solo-leveling/chapter-1/",
-      "releaseDate": "January 20, 2023"
-    },
-    {
-      "name": "Chapter 2",
-      "number": 2,
-      "url": "https://manhwaclan.com/manga/solo-leveling/chapter-2/",
-      "releaseDate": "January 20, 2023"
-    }
-    // Etc.
-  ]
+  "data": {
+    "chapters": [
+      {
+        "name": "Chapter 1",
+        "number": 1,
+        "url": "https://manhwaclan.com/manga/solo-leveling/chapter-1/",
+        "releaseDate": "January 20, 2023"
+      },
+      {
+        "name": "Chapter 2",
+        "number": 2,
+        "url": "https://manhwaclan.com/manga/solo-leveling/chapter-2/",
+        "releaseDate": "January 20, 2023"
+      }
+      // Etc.
+    ],
+    "chapterCount": 202
+  }
 }
 ```
 
@@ -98,33 +101,30 @@ GET /manga/solo-leveling/chapters/200
   "data": {
     "images": [
       "https://c1.clancd.com/manga_638098507637077977/fb7f2a41dfa80e8c454ab160802b0086/03.jpg",
-      "https://c1.clancd.com/manga_638098507637077977/fb7f2a41dfa80e8c454ab160802b0086/04.jpg",
-      "https://c1.clancd.com/manga_638098507637077977/fb7f2a41dfa80e8c454ab160802b0086/05.jpg",
-      "https://c1.clancd.com/manga_638098507637077977/fb7f2a41dfa80e8c454ab160802b0086/06.jpg",
-      "https://c1.clancd.com/manga_638098507637077977/fb7f2a41dfa80e8c454ab160802b0086/07.jpg",
-      "https://c1.clancd.com/manga_638098507637077977/fb7f2a41dfa80e8c454ab160802b0086/08.jpg",
-      "https://c1.clancd.com/manga_638098507637077977/fb7f2a41dfa80e8c454ab160802b0086/09.jpg",
-      "https://c1.clancd.com/manga_638098507637077977/fb7f2a41dfa80e8c454ab160802b0086/10.jpg",
-      "https://c1.clancd.com/manga_638098507637077977/fb7f2a41dfa80e8c454ab160802b0086/11.jpg",
-      "https://c1.clancd.com/manga_638098507637077977/fb7f2a41dfa80e8c454ab160802b0086/12.jpg",
-      "https://c1.clancd.com/manga_638098507637077977/fb7f2a41dfa80e8c454ab160802b0086/13.jpg",
-      "https://c1.clancd.com/manga_638098507637077977/fb7f2a41dfa80e8c454ab160802b0086/14.jpg",
-      "https://c1.clancd.com/manga_638098507637077977/fb7f2a41dfa80e8c454ab160802b0086/15.jpg"
+      "https://c1.clancd.com/manga_638098507637077977/fb7f2a41dfa80e8c454ab160802b0086/04.jpg"
+      // Etc.
     ]
   }
 }
 ```
 
-### Search Manga
+### Search Manga by Title
 
 ```http
 GET /search?q={query}&page={page}
+GET /search?query={query}&page={page}
 ```
+
+**Parameters:**
+
+- `q` or `query` (required): Search term
+- `page` (optional): Page number (default: 1)
 
 **Example:**
 
 ```http
-GET /search?q=solo&page=1
+GET /search?q=solo
+GET /search?query=solo&page=1
 ```
 
 **Response:**
@@ -135,19 +135,149 @@ GET /search?q=solo&page=1
   "data": {
     "results": [
       {
-        "title": "Solo Leveling",
-        "url": "https://manhwaclan.com/manga/solo-leveling/",
-        "slug": "solo-leveling"
+        "title": "Solo Leveling: Arise",
+        "url": "https://manhwaclan.com/manga/solo-leveling-arise/",
+        "slug": "solo-leveling-arise",
+        "imageUrl": "https://manhwaclan.com/wp-content/uploads/2025/06/Solo-Leveling-Arise-193x278.jpg",
+        "rating": "2.8"
       },
       {
-        "title": "Solo Max Level Newbie",
-        "url": "https://manhwaclan.com/manga/solo-max-level-newbie/",
-        "slug": "solo-max-level-newbie"
+        "title": "Emperor of Solo Play",
+        "url": "https://manhwaclan.com/manga/emperor-of-solo-play/",
+        "slug": "emperor-of-solo-play",
+        "imageUrl": "https://manhwaclan.com/wp-content/uploads/2025/04/Emperor-of-Solo-Play-193x278.webp",
+        "rating": "4.3"
       }
+      // Etc.
     ],
     "pagination": {
       "page": 1,
-      "totalPages": 5,
+      "totalPages": 3,
+      "hasNext": true,
+      "hasPrev": false
+    }
+  }
+}
+```
+
+### Search Manga by Genre
+
+```http
+GET /search/genre/{genre}?page={page}&order_by={sort}
+```
+
+**Parameters:**
+
+- `genre` (required): Genre to filter by
+- `page` (optional): Page number (default: 1)
+- `order_by` (optional): Sort order (default: "latest")
+
+**Available Genres:**
+
+- `action`, `adaptation`, `adult`, `adventure`, `comedy`, `cooking`, `demon`, `drama`, `fantasy`, `harem`, `historical`, `isekai`, `josei`, `magic`, `magical`, `manga`, `manhua`, `manhwa`, `martial-arts`, `mature`, `mystery`, `reincarnation`, `romance`, `school-life`, `shoujo`, `shounen`, `slice-of-life`, `smut`, `supernatural`, `time-travel`, `vampire`, `villainess`, `webtoon`
+
+**Available Sort Options:**
+
+- `alphabetical` - Sort alphabetically
+- `trending` - Sort by trending
+- `new` - Sort by recently added
+- `latest` - Sort by recently updated (default)
+- `popular` - Sort by popularity
+- `rating` - Sort by rating
+
+**Example:**
+
+```http
+GET /search/genre/action
+GET /search/genre/action?page=1&order_by=latest
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "data": {
+    "results": [
+      {
+        "title": "I’m the strongest boss",
+        "url": "https://manhwaclan.com/manga/im-the-strongest-boss/",
+        "slug": "im-the-strongest-boss",
+        "imageUrl": "https://manhwaclan.com/wp-content/uploads/2023/12/Im-the-strongest-boss-clan-175x238.jpg",
+        "rating": "4.3"
+      },
+      {
+        "title": "When a Genius Office Worker Goes Too Far",
+        "url": "https://manhwaclan.com/manga/when-a-genius-office-worker-goes-too-far/",
+        "slug": "when-a-genius-office-worker-goes-too-far",
+        "imageUrl": "https://manhwaclan.com/wp-content/uploads/2025/07/When-a-Genius-Office-Worker-Goes-Too-Far-175x238.webp",
+        "rating": "4.7"
+      }
+      // Etc.
+    ],
+    "pagination": {
+      "page": 1,
+      "totalPages": 120,
+      "hasNext": true,
+      "hasPrev": false
+    }
+  }
+}
+```
+
+### Search Manga by Sort
+
+```http
+GET /search/sort/{sort}?page={page}
+```
+
+**Parameters:**
+
+- `sort` (required): Sort order
+- `page` (optional): Page number (default: 1)
+
+**Available Sort Options:**
+
+- `alphabetical` - Sort alphabetically
+- `trending` - Sort by trending
+- `new` - Sort by recently added
+- `latest` - Sort by recently updated
+- `popular` - Sort by popularity
+- `rating` - Sort by rating
+
+**Example:**
+
+```http
+GET /search/sort/popular
+GET /search/sort/popular?page=1
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "data": {
+    "results": [
+      {
+        "title": "Tears on a Withered Flower",
+        "url": "https://manhwaclan.com/manga/tears-on-a-withered-flower/",
+        "slug": "tears-on-a-withered-flower",
+        "imageUrl": "https://manhwaclan.com/wp-content/uploads/2024/09/Tears-on-a-Withered-Flower-175x238.jpeg",
+        "rating": "4.7"
+      },
+      {
+        "title": "Death Is The Only Ending For The Villainess",
+        "url": "https://manhwaclan.com/manga/death-is-the-only-ending-for-the-villainess/",
+        "slug": "death-is-the-only-ending-for-the-villainess",
+        "imageUrl": "https://manhwaclan.com/wp-content/uploads/2022/05/Death-Is-The-Only-Ending-For-The-Villainess-OK-COVER-175x238.jpg",
+        "rating": "4.8"
+      }
+      // Etc.
+    ],
+    "pagination": {
+      "page": 1,
+      "totalPages": 494,
       "hasNext": true,
       "hasPrev": false
     }
