@@ -138,15 +138,23 @@ GET /search?query=solo&page=1
         "title": "Solo Leveling: Arise",
         "url": "https://manhwaclan.com/manga/solo-leveling-arise/",
         "slug": "solo-leveling-arise",
-        "imageUrl": "https://manhwaclan.com/wp-content/uploads/2025/06/Solo-Leveling-Arise-193x278.jpg",
-        "rating": "2.8"
+        "coverImage": "https://manhwaclan.com/wp-content/uploads/2025/06/Solo-Leveling-Arise-193x278.jpg",
+        "rating": "2.8",
+        "lastUpdated": {
+          "chapter": "18",
+          "time": "June 13, 2025"
+        }
       },
       {
         "title": "Emperor of Solo Play",
         "url": "https://manhwaclan.com/manga/emperor-of-solo-play/",
         "slug": "emperor-of-solo-play",
-        "imageUrl": "https://manhwaclan.com/wp-content/uploads/2025/04/Emperor-of-Solo-Play-193x278.webp",
-        "rating": "4.3"
+        "coverImage": "https://manhwaclan.com/wp-content/uploads/2025/04/Emperor-of-Solo-Play-193x278.webp",
+        "rating": "4.3",
+        "lastUpdated": {
+          "chapter": "28",
+          "time": "August 17, 2025"
+        }
       }
       // Etc.
     ],
@@ -200,18 +208,26 @@ GET /search/genre/action?page=1&order_by=latest
   "data": {
     "results": [
       {
-        "title": "I’m the strongest boss",
-        "url": "https://manhwaclan.com/manga/im-the-strongest-boss/",
-        "slug": "im-the-strongest-boss",
-        "imageUrl": "https://manhwaclan.com/wp-content/uploads/2023/12/Im-the-strongest-boss-clan-175x238.jpg",
-        "rating": "4.3"
+        "title": "Overtime Elite",
+        "url": "https://manhwaclan.com/manga/overtime-elite/",
+        "slug": "overtime-elite",
+        "coverImage": "https://manhwaclan.com/wp-content/uploads/2024/10/Overtime-Elite-175x238.webp",
+        "rating": "4.4",
+        "lastUpdated": {
+          "chapter": "49",
+          "time": "7 hours ago"
+        }
       },
       {
-        "title": "When a Genius Office Worker Goes Too Far",
-        "url": "https://manhwaclan.com/manga/when-a-genius-office-worker-goes-too-far/",
-        "slug": "when-a-genius-office-worker-goes-too-far",
-        "imageUrl": "https://manhwaclan.com/wp-content/uploads/2025/07/When-a-Genius-Office-Worker-Goes-Too-Far-175x238.webp",
-        "rating": "4.7"
+        "title": "After Reincarnation, My Enemy Made Me Invincible with Money",
+        "url": "https://manhwaclan.com/manga/after-reincarnation-my-enemy-made-me-invincible-with-money/",
+        "slug": "after-reincarnation-my-enemy-made-me-invincible-with-money",
+        "coverImage": "https://manhwaclan.com/wp-content/uploads/2025/08/After-Reincarnation-My-Enemy-Made-Me-Invincible-with-Money-175x238.jpg",
+        "rating": "2.8",
+        "lastUpdated": {
+          "chapter": "14",
+          "time": "7 hours ago"
+        }
       }
       // Etc.
     ],
@@ -263,15 +279,23 @@ GET /search/sort/popular?page=1
         "title": "Tears on a Withered Flower",
         "url": "https://manhwaclan.com/manga/tears-on-a-withered-flower/",
         "slug": "tears-on-a-withered-flower",
-        "imageUrl": "https://manhwaclan.com/wp-content/uploads/2024/09/Tears-on-a-Withered-Flower-175x238.jpeg",
-        "rating": "4.7"
+        "coverImage": "https://manhwaclan.com/wp-content/uploads/2024/09/Tears-on-a-Withered-Flower-175x238.jpeg",
+        "rating": "4.7",
+        "lastUpdated": {
+          "chapter": "65",
+          "time": "August 16, 2025"
+        }
       },
       {
         "title": "Death Is The Only Ending For The Villainess",
         "url": "https://manhwaclan.com/manga/death-is-the-only-ending-for-the-villainess/",
         "slug": "death-is-the-only-ending-for-the-villainess",
-        "imageUrl": "https://manhwaclan.com/wp-content/uploads/2022/05/Death-Is-The-Only-Ending-For-The-Villainess-OK-COVER-175x238.jpg",
-        "rating": "4.8"
+        "coverImage": "https://manhwaclan.com/wp-content/uploads/2022/05/Death-Is-The-Only-Ending-For-The-Villainess-OK-COVER-175x238.jpg",
+        "rating": "4.8",
+        "lastUpdated": {
+          "chapter": "183",
+          "time": "August 15, 2025"
+        }
       }
       // Etc.
     ],

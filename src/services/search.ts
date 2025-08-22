@@ -48,7 +48,7 @@ export async function search(query: string, page: number): Promise<SearchRespons
         title,
         url: href,
         slug: href.match(/\/manga\/([^/]+)/)?.[1] ?? "",
-        imageUrl: $el.find(".tab-thumb img").attr("src") ?? "",
+        coverImage: $el.find(".tab-thumb img").attr("src") ?? "",
         rating: $el.find(".meta-item.rating .score").text().trim() || null,
         lastUpdated: {
           chapter: chapter,
@@ -92,7 +92,7 @@ async function fetchMangaList(url: string, page: number): Promise<SearchResponse
         title,
         url: href,
         slug: href.match(/\/manga\/([^/]+)/)?.[1] ?? "",
-        imageUrl: $el.find(".item-thumb img").attr("src") ?? "",
+        coverImage: $el.find(".item-thumb img").attr("src") ?? "",
         rating: $el.find(".meta-item.rating .score").text().trim() || null,
         lastUpdated: {
           chapter:

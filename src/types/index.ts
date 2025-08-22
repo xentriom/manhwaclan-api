@@ -24,7 +24,7 @@ export interface SearchResult {
   title: string;
   url: string;
   slug: string;
-  imageUrl: string;
+  coverImage: string;
   rating: string | null;
   lastUpdated: {
     chapter: string;
