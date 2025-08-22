@@ -24,8 +24,12 @@ export interface SearchResult {
   title: string;
   url: string;
   slug: string;
-  imageUrl?: string;
+  imageUrl: string;
   rating: string | null;
+  lastUpdated: {
+    chapter: string;
+    time: string;
+  };
 }
 
 export interface Pagination {

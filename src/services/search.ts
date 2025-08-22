@@ -8,6 +8,7 @@ import {
   SortOptions,
 } from "../utils/constants.js";
 import { randomHeader } from "../utils/headers.js";
+import { normalizeDate } from "../utils/dateUtils.js";
 import type { SearchResponse } from "../types/index.js";
 
 function parsePagination($: cheerio.CheerioAPI, page: number) {
@@ -33,12 +34,26 @@ export async function search(query: string, page: number): Promise<SearchRespons
       const href = $el.find("a").attr("href");
       if (!title || !href) return null;
 
+      const chapter =
+        $el
+          .find(".tab-meta .meta-item.latest-chap .chapter a")
+          .text()
+          .trim()
+          .match(/Chapter\s+(\d+)/)?.[1] ?? "";
+      const date =
+        $el.find(".tab-meta .meta-item.post-on .font-meta a").attr("title") ||
+        $el.find(".tab-meta .meta-item.post-on .font-meta").text().trim();
+
       return {
         title,
         url: href,
         slug: href.match(/\/manga\/([^/]+)/)?.[1] ?? "",
         imageUrl: $el.find(".tab-thumb img").attr("src") ?? "",
         rating: $el.find(".meta-item.rating .score").text().trim() || null,
+        lastUpdated: {
+          chapter: chapter,
+          time: normalizeDate(date),
+        },
       };
     })
     .get()
@@ -69,12 +84,25 @@ async function fetchMangaList(url: string, page: number): Promise<SearchResponse
       const href = link.attr("href");
       if (!title || !href) return null;
 
+      const chapter = $el.find(".list-chapter .chapter-item").first();
+      const date =
+        chapter.find(".post-on a").attr("title") || chapter.find(".post-on").text().trim();
+
       return {
         title,
         url: href,
         slug: href.match(/\/manga\/([^/]+)/)?.[1] ?? "",
         imageUrl: $el.find(".item-thumb img").attr("src") ?? "",
         rating: $el.find(".meta-item.rating .score").text().trim() || null,
+        lastUpdated: {
+          chapter:
+            chapter
+              .find(".chapter a")
+              .text()
+              .trim()
+              .match(/Chapter\s+(\d+)/)?.[1] ?? "",
+          time: date,
+        },
       };
     })
     .get()
