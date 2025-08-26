@@ -15,9 +15,17 @@ export interface MangaDetails {
 
 export interface Chapter {
   name: string;
-  number: number;
+  number: string;
   url: string;
   releaseDate: string;
+}
+
+export interface ChapterImages {
+  images: string[];
+  pages: {
+    previous: string | null;
+    next: string | null;
+  };
 }
 
 export interface SearchResult {

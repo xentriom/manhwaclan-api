@@ -1,7 +1,7 @@
 import * as cheerio from "cheerio";
 import { randomHeader } from "../utils/headers.js";
 import { ApiError } from "../utils/errors.js";
-import type { MangaDetails, Chapter } from "../types/index.js";
+import type { MangaDetails, Chapter, ChapterImages } from "../types/index.js";
 import { BASE_URL, httpClient } from "../utils/constants.js";
 
 export async function fetchDetails(slug: string): Promise<MangaDetails> {
@@ -63,13 +63,13 @@ export async function fetchChapters(slug: string): Promise<Chapter[]> {
       const link = $el.find("a");
       const href = link.attr("href");
 
-      const numberMatch = href?.match(/chapter-(\d+)/);
-      const number = numberMatch ? parseInt(numberMatch[1], 10) : null;
+      const numberMatch = href?.match(/chapter-(\d+(?:\.\d+)?)/);
+      const chpNumber = numberMatch ? numberMatch[1] : null;
 
-      return number && href
+      return href && chpNumber
         ? {
             name: link.text().trim(),
-            number,
+            number: chpNumber,
             url: href,
             releaseDate: $el.find(".chapter-release-date i").text().trim() || "",
           }
@@ -78,10 +78,10 @@ export async function fetchChapters(slug: string): Promise<Chapter[]> {
     .get()
     .filter(Boolean);
 
-  return chapters.sort((a, b) => a.number - b.number);
+  return chapters.sort((a, b) => parseFloat(a.number) - parseFloat(b.number));
 }
 
-export async function fetchImages(slug: string, chapter: string): Promise<string[]> {
+export async function fetchImages(slug: string, chapter: string): Promise<ChapterImages> {
   const url = `${BASE_URL}/manga/${encodeURIComponent(slug)}/chapter-${chapter}/`;
   const { data } = await httpClient.get(url, { headers: randomHeader() });
   const $ = cheerio.load(data);
@@ -91,5 +91,14 @@ export async function fetchImages(slug: string, chapter: string): Promise<string
     .get()
     .filter(Boolean);
 
-  return imageUrls;
+  const prevChapter = $(".wp-manga-nav .nav-links .nav-previous a").attr("href")?.trim();
+  const nextChapter = $(".wp-manga-nav .nav-links .nav-next a").attr("href")?.trim();
+
+  return {
+    images: imageUrls,
+    pages: {
+      previous: prevChapter?.match(/chapter-(\d+(?:\.\d+)?)/)?.[1] ?? null,
+      next: nextChapter?.match(/chapter-(\d+(?:\.\d+)?)/)?.[1] ?? null,
+    },
+  };
 }
