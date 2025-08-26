@@ -57,19 +57,17 @@ export async function fetchChapters(slug: string): Promise<Chapter[]> {
   const { data } = await httpClient.get(url, { headers: randomHeader() });
   const $ = cheerio.load(data);
 
-  const chapters = $(".wp-manga-chapter")
+  return $(".wp-manga-chapter")
     .map((_, el) => {
       const $el = $(el);
       const link = $el.find("a");
       const href = link.attr("href");
+      const chapter = link.text().trim();
 
-      const numberMatch = href?.match(/chapter-(\d+(?:\.\d+)?)/);
-      const chpNumber = numberMatch ? numberMatch[1] : null;
-
-      return href && chpNumber
+      return href
         ? {
-            name: link.text().trim(),
-            number: chpNumber,
+            name: chapter,
+            number: chapter.split(" ")[1],
             url: href,
             releaseDate: $el.find(".chapter-release-date i").text().trim() || "",
           }
@@ -77,8 +75,6 @@ export async function fetchChapters(slug: string): Promise<Chapter[]> {
     })
     .get()
     .filter(Boolean);
-
-  return chapters.sort((a, b) => parseFloat(a.number) - parseFloat(b.number));
 }
 
 export async function fetchImages(slug: string, chapter: string): Promise<ChapterImages> {
@@ -97,8 +93,8 @@ export async function fetchImages(slug: string, chapter: string): Promise<Chapte
   return {
     images: imageUrls,
     pages: {
-      previous: prevChapter?.match(/chapter-(\d+(?:\.\d+)?)/)?.[1] ?? null,
-      next: nextChapter?.match(/chapter-(\d+(?:\.\d+)?)/)?.[1] ?? null,
+      previous: prevChapter?.match(/chapter-(\d+(?:\-\d+)?)/)?.[1] ?? null,
+      next: nextChapter?.match(/chapter-(\d+(?:\-\d+)?)/)?.[1] ?? null,
     },
   };
 }
