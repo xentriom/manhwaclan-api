@@ -1,3 +1,6 @@
+> [!CAUTION]
+> This break when cloudflare protection is on for Manhwaclan
+
 # Toonga - Manga Scraping API
 
 A fast and efficient API for scraping manga data from manhwaclan.com built with Hono and TypeScript.
@@ -320,4 +323,4 @@ GET /search/sort/popular?page=1
 
 ## Disclaimer
 
-This API is for educational purposes only. Please respect the terms of service of manhwaclan.com and use responsibly.
+This API is for educational purposes only. Please respect the terms of service of manhwaclan.com and use responsibly. Feel free to contact me on Discord (@xentriom) or via email (xentriom@gmail.com) for any queries or issues related to this project.
