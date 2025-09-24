@@ -6,7 +6,10 @@ import { ApiError } from "./utils/errors.js";
 import mangaRoutes from "./routes/manga.js";
 import searchRoutes from "./routes/search.js";
 import imageRoutes from "./routes/image.js";
-import "dotenv/config";
+
+// Set to true to run the server locally
+const isLocal = false;
+// --------------------------------
 
 const app = new Hono();
 
@@ -20,19 +23,23 @@ app.use(
   // Pretty JSON /?pretty
   prettyJSON({ space: 4 }),
   // Log request method, url, and duration
-  async (c, next) => {
-    const start = Date.now();
-    await next();
-    const duration = Date.now() - start;
+  isLocal
+    ? async (c, next) => {
+        const start = Date.now();
+        await next();
+        const duration = Date.now() - start;
 
-    function formatDuration(duration: number) {
-      if (duration < 100) return `\x1b[32m${duration}ms\x1b[0m`;
-      if (duration < 500) return `\x1b[33m${duration}ms\x1b[0m`;
-      return `\x1b[31m${duration}ms\x1b[0m`;
-    }
+        function formatDuration(duration: number) {
+          if (duration < 100) return `\x1b[32m${duration}ms\x1b[0m`;
+          if (duration < 500) return `\x1b[33m${duration}ms\x1b[0m`;
+          return `\x1b[31m${duration}ms\x1b[0m`;
+        }
 
-    console.log(`${c.req.method} ${c.req.path} in ${formatDuration(duration)}`);
-  },
+        console.log(`${c.req.method} ${c.req.path} in ${formatDuration(duration)}`);
+      }
+    : async (c, next) => {
+        await next();
+      },
 );
 
 // Global error
@@ -53,7 +60,7 @@ app.route("/image", imageRoutes);
 
 export default app;
 
-if (process.env.VERCEL_ENV === "development") {
+if (isLocal) {
   const { serve } = await import("@hono/node-server");
   const os = await import("os");
   const { default: packageJson } = await import("../package.json");

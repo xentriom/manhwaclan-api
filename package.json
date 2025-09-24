@@ -17,7 +17,6 @@
     "@hono/node-server": "^1.19.4",
     "@types/node": "^20.11.17",
     "@types/user-agents": "^1.0.4",
-    "dotenv": "^17.2.2",
     "tsx": "^4.20.5",
     "typescript": "^5.8.3"
   }
