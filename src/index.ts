@@ -53,8 +53,7 @@ app.route("/image", imageRoutes);
 
 export default app;
 
-console.log(process.env.NODE_ENV);
-if (process.env.VERCEL_ENV !== "production") {
+if (process.env.VERCEL_ENV === "development") {
   const { serve } = await import("@hono/node-server");
   const os = await import("os");
   const { default: packageJson } = await import("../package.json");
