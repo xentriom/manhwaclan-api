@@ -1,7 +1,7 @@
 > [!CAUTION]
 > This break when cloudflare protection is on for Manhwaclan
 
-# Toonga - Manga Scraping API
+# Unofficial Manga Scraping API from Manhwaclan
 
 A fast and efficient API for scraping manga data from manhwaclan.com built with Hono and TypeScript.
 
