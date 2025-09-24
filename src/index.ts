@@ -6,6 +6,7 @@ import { ApiError } from "./utils/errors.js";
 import mangaRoutes from "./routes/manga.js";
 import searchRoutes from "./routes/search.js";
 import imageRoutes from "./routes/image.js";
+import "dotenv/config";
 
 const app = new Hono();
 
@@ -52,6 +53,7 @@ app.route("/image", imageRoutes);
 
 export default app;
 
+console.log(process.env.NODE_ENV);
 if (process.env.VERCEL_ENV !== "production") {
   const { serve } = await import("@hono/node-server");
   const os = await import("os");
