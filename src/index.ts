@@ -21,26 +21,25 @@ app.use(
     allowMethods: ["GET"],
   }),
   // Pretty JSON /?pretty
-  prettyJSON({ space: 4 }),
-  // Log request method, url, and duration
-  isLocal
-    ? async (c, next) => {
-        const start = Date.now();
-        await next();
-        const duration = Date.now() - start;
-
-        function formatDuration(duration: number) {
-          if (duration < 100) return `\x1b[32m${duration}ms\x1b[0m`;
-          if (duration < 500) return `\x1b[33m${duration}ms\x1b[0m`;
-          return `\x1b[31m${duration}ms\x1b[0m`;
-        }
-
-        console.log(`${c.req.method} ${c.req.path} in ${formatDuration(duration)}`);
-      }
-    : async (c, next) => {
-        await next();
-      },
+  prettyJSON({ space: 4 })
 );
+
+if (isLocal) {
+  // Log requests
+  app.use("*", async (c, next) => {
+    const start = Date.now();
+    await next();
+    const duration = Date.now() -start;
+
+    function formatDuration(duration: number) {
+      if (duration < 100) return `\x1b[32m${duration}ms\x1b[0m`;
+      if (duration < 500) return `\x1b[33m${duration}ms\x1b[0m`;
+      return `\x1b[31m${duration}ms\x1b[0m`;
+    }
+
+    console.log(`${c.req.method} ${c.req.path} in ${formatDuration(duration)}`);
+  });
+}
 
 // Global error
 app.onError((err, c) => {
